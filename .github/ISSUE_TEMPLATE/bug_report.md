@@ -1,8 +1,8 @@
 ---
 name: "\U0001F9A0 Bug Report"
 about: You've found a bug?
-title: "[BUG] "
-labels: bug
+title: '[BUG] '
+labels: ':microbe: bug'
 ---
 
 <!--
@@ -13,7 +13,7 @@ labels: bug
 
 - [ ] I'm on the [latest version](https://github.com/atlas-bi/LDAP-ETL)
 - [ ] I've searched the [issues](https://github.com/atlas-bi/LDAP-ETL/issues)
-- [ ] I've read the [docs](https://www.atlas.bi/docs/bi_library/etl/)
+- [ ] I've read the [docs](https://www.atlas.bi/docs/bi-library/etl/)
 
 ## System Info
  - OS: e.g. Windows 95
@@ -24,6 +24,7 @@ labels: bug
 <!-- A clear and concise description of what the bug is. -->
 
 ## How To Reproduce
+
 <!-- Steps to reproduce the behavior -->
 
 <!-- Thanks! 🤠 -->
