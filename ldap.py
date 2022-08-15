@@ -3,6 +3,7 @@ import os
 import re
 from typing import Dict, List, Union
 
+import pyodbc
 from dotenv import load_dotenv
 from ldap3 import ALL, SUBTREE, Connection, Server
 
@@ -170,24 +171,24 @@ for base in GROUPSEARCHBASES:
 # close connection
 conn.unbind()
 
-# # insert data to db
-# conn = pyodbc.connect(DATABASE, autocommit=True)
-# cursor = conn.cursor()
-# cursor.execute(
-#     "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
-# )
-# cursor.executemany(
-#     "INSERT INTO [LDAP].[dbo].[Users] (Base,EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
-#     users,
-# )
-# if len(memberships) > 0:
-#     cursor.executemany(
-#         "INSERT INTO [LDAP].[dbo].[Memberships] (AccountName, GroupType, GroupName,LoadDate) VALUES (?,?,?,GetDate())",
-#         memberships,
-#     )
-# if len(groups) > 0:
-#     cursor.executemany(
-#         "INSERT INTO [LDAP].[dbo].[Groups] (GroupType, AccountName, GroupName, GroupEmail,LoadDate) VALUES (?,?,?,?,GetDate())",
-#         groups,
-#     )
-# conn.close()
+# insert data to db
+conn = pyodbc.connect(DATABASE, autocommit=True)
+cursor = conn.cursor()
+cursor.execute(
+    "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
+)
+cursor.executemany(
+    "INSERT INTO [LDAP].[dbo].[Users] (Base,EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
+    users,
+)
+if len(memberships) > 0:
+    cursor.executemany(
+        "INSERT INTO [LDAP].[dbo].[Memberships] (AccountName, GroupType, GroupName,LoadDate) VALUES (?,?,?,GetDate())",
+        memberships,
+    )
+if len(groups) > 0:
+    cursor.executemany(
+        "INSERT INTO [LDAP].[dbo].[Groups] (GroupType, AccountName, GroupName, GroupEmail,LoadDate) VALUES (?,?,?,?,GetDate())",
+        groups,
+    )
+conn.close()
