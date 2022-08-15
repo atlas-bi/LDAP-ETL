@@ -1,18 +1,45 @@
 """Atlas Supplementary LDAP ETL."""
+import os
+import re
 from typing import Dict, List, Union
 
 import pyodbc
+from dotenv import load_dotenv
 from ldap3 import ALL, SUBTREE, Connection, Server
 
-import settings
+load_dotenv()
+
+SERVERURI = os.environ.get("SERVERURI", "ldap.example.com")
+
+PASSWORD = os.environ.get("ADPASSWORD", "exampl3")
+
+USERNAME = os.environ.get("ADUSERNAME", "me")
+
+DATABASE = os.environ.get(
+    "DATABASE",
+    "DRIVER={ODBC Driver 17 for SQL Server};SERVER=atlas;DATABASE=LDAP;UID=datagov;PWD=123",
+)
+ADDOMAIN = os.environ.get("ADDOMAIN", "EXAMPLEHEALTH")
+DC = os.environ.get("DC", "ExampleHealth")
+SEARCHBASES = re.split(
+    r"\s*,\s*",
+    os.environ.get(
+        "SEARCHBASES", "EPIC, Employees, Doctors, Non-Staff, Students, Volunteers"
+    ),
+)
+GROUPSEARCHBASES = re.split(
+    r"\s*,\s*",
+    os.environ.get(
+        "GROUPSEARCHBASES",
+        "Email Distribution Groups,    Room & Shared Mailboxes,    Access & Permissions",
+    ),
+)
 
 # https://ldap3.readthedocs.io/
 
 # ssl is optional
-server = Server(settings.server_uri, use_ssl=True, get_info=ALL)
-conn = Connection(
-    server, settings.username, settings.password, auto_bind=True, auto_referrals=False
-)
+server = Server(SERVERURI, use_ssl=True, get_info=ALL)
+conn = Connection(server, USERNAME, PASSWORD, auto_bind=True, auto_referrals=False)
 conn.start_tls()
 
 """
@@ -70,11 +97,11 @@ def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
     return ""
 
 
-for base in settings.search_bases:
+for base in SEARCHBASES:
 
     # ldap only returns 1000 records at a time. generator will get all.
     generator = conn.extend.standard.paged_search(
-        search_base="OU=" + base + ",dc=" + settings.dc + ",dc=net",
+        search_base="OU=" + base + ",dc=" + DC + ",dc=net",
         search_filter="(CN=*)",
         search_scope=SUBTREE,
         attributes=["*"],
@@ -88,7 +115,7 @@ for base in settings.search_bases:
         row = [
             base,
             get_attribute("employeeID", data),
-            prefixer(get_attribute("sAMAccountName", data), settings.ad_domain + "\\"),
+            prefixer(get_attribute("sAMAccountName", data), ADDOMAIN + "\\"),
             get_attribute("displayName", data),
             get_attribute(["cn", "name"], data),
             get_attribute("givenName", data),
@@ -107,26 +134,21 @@ for base in settings.search_bases:
                 memberdict = dict([x.split("=") for x in member_set.split(",")])
 
                 memberrow = [
-                    prefixer(
-                        get_attribute("sAMAccountName", data), settings.ad_domain + "\\"
-                    ),
+                    prefixer(get_attribute("sAMAccountName", data), ADDOMAIN + "\\"),
                     get_attribute("OU", memberdict),
                     get_attribute("CN", memberdict),
                 ]
 
                 # only save three groups
-                if (
-                    "OU" in memberdict
-                    and memberdict["OU"] in settings.group_search_bases
-                ):
+                if "OU" in memberdict and memberdict["OU"] in GROUPSEARCHBASES:
                     memberships.append(memberrow)
 
 
-for base in settings.group_search_bases:
+for base in GROUPSEARCHBASES:
 
     # ldap only returns 1000 records at a time. generator will get all.
     generator = conn.extend.standard.paged_search(
-        search_base="OU=" + base + ",dc=" + settings.dc + ",dc=net",
+        search_base="OU=" + base + ",dc=" + DC + ",dc=net",
         search_filter="(CN=*)",
         search_scope=SUBTREE,
         attributes=["*"],
@@ -150,7 +172,7 @@ for base in settings.group_search_bases:
 conn.unbind()
 
 # insert data to db
-conn = pyodbc.connect(settings.database, autocommit=True)
+conn = pyodbc.connect(DATABASE, autocommit=True)
 cursor = conn.cursor()
 cursor.execute(
     "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
