@@ -9,7 +9,7 @@
  <a href="https://discord.gg/hdz2cpygQD"><img alt="discord chat" src="https://badgen.net/discord/online-members/hdz2cpygQD/" /></a>
  <a href="https://github.com/atlas-bi/LDAP-ETL/releases"><img alt="latest release" src="https://badgen.net/github/release/atlas-bi/LDAP-ETL" /></a>
 
-<p align="center">Loads data from an LDAP server into a database that is accessible by the primary [Atlas metadata ETL](https://github.com/atlas-bi/atlas-bi-libaray-etl).
+<p align="center">Loads data from an LDAP server into a database that is accessible by the primary <a href="https://github.com/atlas-bi/atlas-bi-libaray-etl">Atlas metadata ETL</a>.
  </p>
 
 
