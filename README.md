@@ -17,7 +17,7 @@
 
 ### Create Database
 
-Use the `LDAPDatabaseCreationScript.sql` to create a database with the required tables.
+Use the [`LDAPDatabaseCreationScript.sql`](https://raw.githubusercontent.com/atlas-bi/LDAP-ETL/master/LDAPDatabaseCreationScript.sql) to create a database with the required tables.
 
 ### Install Packages
 
