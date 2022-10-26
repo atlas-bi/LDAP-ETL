@@ -9,7 +9,7 @@
  <a href="https://discord.gg/hdz2cpygQD"><img alt="discord chat" src="https://badgen.net/discord/online-members/hdz2cpygQD/" /></a>
  <a href="https://github.com/atlas-bi/LDAP-ETL/releases"><img alt="latest release" src="https://badgen.net/github/release/atlas-bi/LDAP-ETL" /></a>
 
-<p align="center">Loads data from an LDAP server into a database that is accessible by the primary [Atlas metadata ETL](https://github.com/atlas-bi/atlas-bi-libaray-etl).
+<p align="center">Loads data from an LDAP server into a database that is accessible by the primary <a href="https://github.com/atlas-bi/atlas-bi-libaray-etl">Atlas metadata ETL</a>.
  </p>
 
 
@@ -17,12 +17,22 @@
 
 ### Create Database
 
-Use the `LDAPDatabaseCreationScript.sql` to create a database with the required tables.
+Use the [`LDAPDatabaseCreationScript.sql`](https://raw.githubusercontent.com/atlas-bi/LDAP-ETL/master/LDAPDatabaseCreationScript.sql) to create a database with the required tables.
+
+
+### Dependencies
+
+This ETL uses python > 3.7. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
+
+[C++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) are needed on Windows OS.
 
 ### Install Packages
 
-`poetry install`
+This ETL uses `poetry` as the package manager. Alternatively, you can use `pip` to install the dependencies listed in `pyproject.toml`/dependencies.
 
+```bash
+poetry install
+```
 
 ### Create `.env` file
 
