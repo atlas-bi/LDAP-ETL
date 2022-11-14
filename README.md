@@ -19,10 +19,22 @@
 
 Use the [`LDAPDatabaseCreationScript.sql`](https://raw.githubusercontent.com/atlas-bi/LDAP-ETL/master/LDAPDatabaseCreationScript.sql) to create a database with the required tables.
 
+
+### Dependencies
+
+This ETL uses python > 3.7. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
+
+[C++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) are needed on Windows OS.
+
+[ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16) is required for connecting to the database.
+
 ### Install Packages
 
-`poetry install`
+This ETL uses `poetry` as the package manager. Alternatively, you can use `pip` to install the dependencies listed in `pyproject.toml`/dependencies.
 
+```bash
+poetry install
+```
 
 ### Create `.env` file
 
