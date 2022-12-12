@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "atlas-etl-ldap"
-version = "1.0.0"
+version = "1.1.0"
 description = "Atlas BI Library LDAP ETL"
 authors = ["Christopher Pickering <cpickering@rhc.net>"]
 license = "GPL-3.0-or-later"
