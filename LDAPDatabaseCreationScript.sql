@@ -18,6 +18,7 @@ CREATE TABLE [dbo].[Groups](
 	[GroupName] [nvarchar](max) NULL,
 	[GroupEmail] [nvarchar](max) NULL,
 	[GroupType] [nvarchar](max) NULL,
+	[LoadDate] [date],
 PRIMARY KEY CLUSTERED
 (
 	[GroupId] ASC
@@ -34,6 +35,7 @@ CREATE TABLE [dbo].[Memberships](
 	[AccountName] [nvarchar](max) NULL,
 	[GroupType] [nvarchar](max) NULL,
 	[GroupName] [nvarchar](max) NULL,
+	[LoadDate] [date],
 PRIMARY KEY CLUSTERED
 (
 	[MembershipId] ASC
@@ -58,6 +60,7 @@ CREATE TABLE [dbo].[Users](
 	[Title] [nvarchar](max) NULL,
 	[Phone] [nvarchar](max) NULL,
 	[Email] [nvarchar](max) NULL,
+	[LoadDate] [date],
 PRIMARY KEY CLUSTERED
 (
 	[UserId] ASC
