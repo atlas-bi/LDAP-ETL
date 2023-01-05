@@ -144,8 +144,8 @@ for base in SEARCHBASES:
                         prefixer(
                             get_attribute("sAMAccountName", data), ADDOMAIN + "\\"
                         ),
-                        get_attribute("OU", ou),
-                        get_attribute("CN", cn),
+                        ou,
+                        cn,
                     ]
 
                     # only save three groups
