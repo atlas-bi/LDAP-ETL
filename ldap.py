@@ -131,17 +131,26 @@ for base in SEARCHBASES:
         if "memberOf" in data:
 
             for member_set in data["memberOf"]:
-                memberdict = dict([x.split("=") for x in member_set.split(",")])
 
-                memberrow = [
-                    prefixer(get_attribute("sAMAccountName", data), ADDOMAIN + "\\"),
-                    get_attribute("OU", memberdict),
-                    get_attribute("CN", memberdict),
-                ]
+                # one CN
+                cn = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)[0]
 
-                # only save three groups
-                if "OU" in memberdict and memberdict["OU"] in GROUPSEARCHBASES:
-                    memberships.append(memberrow)
+                # for multiple OUs
+                ou_list = re.findall(r"OU=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)
+
+                for ou in ou_list:
+
+                    memberrow = [
+                        prefixer(
+                            get_attribute("sAMAccountName", data), ADDOMAIN + "\\"
+                        ),
+                        ou,
+                        cn,
+                    ]
+
+                    # only save three groups
+                    if ou in GROUPSEARCHBASES:
+                        memberships.append(memberrow)
 
 
 for base in GROUPSEARCHBASES:
