@@ -21,6 +21,7 @@ DATABASE = os.environ.get(
 )
 ADDOMAIN = os.environ.get("ADDOMAIN", "EXAMPLEHEALTH")
 DC = os.environ.get("DC", "ExampleHealth")
+SUFFIX = os.environ.get("SUFFIX", "'DC=' + DC + ',DC=net'")
 SEARCHBASES = re.split(
     r"\s*,\s*",
     os.environ.get(
@@ -101,7 +102,7 @@ for base in SEARCHBASES:
 
     # ldap only returns 1000 records at a time. generator will get all.
     generator = conn.extend.standard.paged_search(
-        search_base="OU=" + base + ",dc=" + DC + ",dc=net",
+        search_base="OU=" + base + "," + SUFFIX,
         search_filter="(CN=*)",
         search_scope=SUBTREE,
         attributes=["*"],
@@ -114,7 +115,7 @@ for base in SEARCHBASES:
 
         row = [
             base,
-            get_attribute("employeeID", data),
+            get_attribute("employeeID", data) or "",
             prefixer(get_attribute("sAMAccountName", data), ADDOMAIN + "\\"),
             get_attribute("displayName", data),
             get_attribute(["cn", "name"], data),
@@ -157,7 +158,7 @@ for base in GROUPSEARCHBASES:
 
     # ldap only returns 1000 records at a time. generator will get all.
     generator = conn.extend.standard.paged_search(
-        search_base="OU=" + base + ",dc=" + DC + ",dc=net",
+        search_base="OU=" + base + "," + SUFFIX,
         search_filter="(CN=*)",
         search_scope=SUBTREE,
         attributes=["*"],
