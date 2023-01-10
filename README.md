@@ -48,7 +48,7 @@ ADUSERNAME=EXAMPLEHEALTH\me
 ADPASSWORD=exampl3
 DATABASE=DRIVER={ODBC Driver 17 for SQL Server};SERVER=atlas;DATABASE=LDAP;UID=datagov;PWD=123
 ADDOMAIN=EXAMPLEHEALTH
-DC=ExampleHealth
+SUFFIX='DC=examplehealth,DC=net'
 SEARCHBASES=EPIC, Employees, Doctors, Non-Staff, Students, Volunteers
 GROUPSEARCHBASES=Email Distribution Groups, Room & Shared Mailboxes,Access & Permissions
 ```
