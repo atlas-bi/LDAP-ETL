@@ -36,6 +36,7 @@ jobs:
 
     - name: Check LDAP is Up
       run: |
+        sudo apt install ldap-utils
         ldapsearch -x -h localhost -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w "adminpassword"
     - name: Run Test
       run: |
