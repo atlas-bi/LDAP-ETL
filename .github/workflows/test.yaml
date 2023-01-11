@@ -39,15 +39,15 @@ jobs:
         poetry run tox -e test
       env:
         SERVERURI: localhost
-        ADUSERNAME: admin
-        ADPASSWORD: configpassword
+        ADUSERNAME: cn=admin,dc=example,dc=org
+        ADPASSWORD: adminpassword
         DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
         ADDOMAIN: ""
         SUFFIX: dc=example,dc=org
         SEARCHBASES: users
         GROUPSEARCHBASES: readers
-        USESSL: True
-        USETLS: True
+        USESSL: False
+        USETLS: False
 
     - name: Upload Coveragex
       uses: codecov/codecov-action@v3
