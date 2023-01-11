@@ -10,7 +10,7 @@ from ldap3 import ALL, SUBTREE, Connection, Server
 load_dotenv()
 
 SERVERURI = os.environ.get("SERVERURI", "ldap.example.com")
-
+print(SERVERURI)
 PASSWORD = os.environ.get("ADPASSWORD", "exampl3")
 
 USERNAME = os.environ.get("ADUSERNAME", "me")

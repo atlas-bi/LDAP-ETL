@@ -39,6 +39,10 @@ jobs:
       with:
         install: sqlengine, sqlpackage
 
+    - name: Setup Database
+      run: |
+        sqlcmd -S localhost -U sa -P dbatools.I0 -d Master -i LDAPDatabaseCreationScript.sql
+
     - name: Run Test
       run: |
         poetry run tox -e test
@@ -46,7 +50,7 @@ jobs:
         SERVERURI: localhost
         ADUSERNAME: cn=admin,dc=example,dc=org
         ADPASSWORD: adminpassword
-        DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
+        DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=LDAP;UID=sa;PWD=dbatools.I0
         ADDOMAIN: ""
         SUFFIX: dc=example,dc=org
         SEARCHBASES: users
