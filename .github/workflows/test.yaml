@@ -50,7 +50,7 @@ jobs:
         SERVERURI: ldap://localhost:389
         ADUSERNAME: cn=admin,dc=example,dc=org
         ADPASSWORD: adminpassword
-        DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=LDAP;UID=sa;PWD=dbatools.I0
+        DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=LDAP;UID=sa;PWD=dbatools.I0;TrustServerCertificate=YES
         ADDOMAIN: ""
         SUFFIX: dc=example,dc=org
         SEARCHBASES: users
