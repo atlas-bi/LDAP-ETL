@@ -51,6 +51,10 @@ ADDOMAIN=EXAMPLEHEALTH
 SUFFIX=DC=examplehealth,DC=net
 SEARCHBASES=EPIC, Employees, Doctors, Non-Staff, Students, Volunteers
 GROUPSEARCHBASES=Email Distribution Groups, Room & Shared Mailboxes,Access & Permissions
+
+# LDAP Configuration
+USESSL=True
+USETLS=True
 ```
 
 ### Running

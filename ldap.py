@@ -36,6 +36,9 @@ GROUPSEARCHBASES = re.split(
     ),
 )
 
+USESSL=True if os.environ.get("USESSL", True).lower() == "true" else False
+USETLS=True if os.environ.get("USESSL", True).lower() == "true" else False
+
 # https://ldap3.readthedocs.io/
 
 
@@ -84,9 +87,10 @@ def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
 
 def main():
     # ssl is optional
-    server = Server(SERVERURI, use_ssl=True, get_info=ALL)
+    server = Server(SERVERURI, use_ssl=USESSL, get_info=ALL)
     conn = Connection(server, USERNAME, PASSWORD, auto_bind=True, auto_referrals=False)
-    conn.start_tls()
+    if USETLS:
+        conn.start_tls()
 
     """
       1. employee search

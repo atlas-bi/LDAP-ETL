@@ -48,6 +48,8 @@ jobs:
         SUFFIX: dc=example,dc=org
         SEARCHBASES: users
         GROUPSEARCHBASES: admins
+        USESSL: True
+        USETLS: True
 
     - name: Upload Coveragex
       uses: codecov/codecov-action@v3
