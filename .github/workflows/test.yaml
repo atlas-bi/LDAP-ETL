@@ -46,6 +46,8 @@ jobs:
         DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
         ADDOMAIN: ""
         SUFFIX: dc=example,dc=org
+        SEARCHBASES: users
+        GROUPSEARCHBASES: admins
 
     - name: Upload Coveragex
       uses: codecov/codecov-action@v3
