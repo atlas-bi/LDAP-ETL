@@ -22,12 +22,12 @@ jobs:
         poetry install
 
     - name: Install Microsoft ODBC
-        run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
+      run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
 
     - name: install sqlserver
-        uses: potatoqualitee/mssqlsuite@v1.5.1
-        with:
-          install: sqlengine, sqlpackage
+      uses: potatoqualitee/mssqlsuite@v1.5.1
+      with:
+        install: sqlengine, sqlpackage
 
     - name: setup ldap
       run: |
