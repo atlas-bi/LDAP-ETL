@@ -23,7 +23,7 @@ jobs:
     - name: Install Microsoft ODBC
       run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
 
-    - name: install sqlserver
+    - name: Install Sql Server
       uses: potatoqualitee/mssqlsuite@v1.5.1
       with:
         install: sqlengine, sqlpackage
@@ -34,6 +34,7 @@ jobs:
         cd ldap-test-server
         docker build -t ldap-server .
         docker run -d --rm --name ldap-server -p 389:389 ldap-server
+        docker exec -it ldap-server /ldap-server/bin/openldap-additional-config.sh
 
     - name: Run Test
       run: |
