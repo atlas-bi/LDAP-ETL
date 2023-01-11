@@ -5,11 +5,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-    ldap:
-      image: bitnami/openldap
-      ports:
-        - '389:1389'
-        - '636:1636'
+      ldap:
+        image: bitnami/openldap
+        ports:
+          - '389:1389'
+          - '636:1636'
 
     steps:
     - name: Checkout
