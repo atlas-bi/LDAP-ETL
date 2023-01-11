@@ -21,7 +21,7 @@ DATABASE = os.environ.get(
 )
 ADDOMAIN = os.environ.get("ADDOMAIN", "EXAMPLEHEALTH")
 DC = os.environ.get("DC", "ExampleHealth")
-SUFFIX = os.environ.get("SUFFIX", "'DC=' + DC + ',DC=net'")
+SUFFIX = os.environ.get("SUFFIX", "'DC='" + DC + "',DC=net'")
 SEARCHBASES = re.split(
     r"\s*,\s*",
     os.environ.get(
