@@ -34,7 +34,7 @@ jobs:
         cd ldap-test-server
         docker build -t ldap-server .
         docker run -d --rm --name ldap-server -p 389:389 ldap-server
-        docker exec -it ldap-server /ldap-server/bin/openldap-additional-config.sh
+        docker exec -t ldap-server /ldap-server/bin/openldap-additional-config.sh
 
     - name: Run Test
       run: |
