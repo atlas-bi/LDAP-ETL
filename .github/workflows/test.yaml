@@ -9,7 +9,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: install python
+    - name: Install Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
@@ -17,9 +17,8 @@ jobs:
     - name: Setup Poetry
       uses: snok/install-poetry@v1
 
-    - name: Install
-      run: |
-        poetry install
+    - name: Install Python Deps
+      run: poetry install
 
     - name: Install Microsoft ODBC
       run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
@@ -29,17 +28,14 @@ jobs:
       with:
         install: sqlengine, sqlpackage
 
-    - name: setup ldap
+    - name: Install LDAP Server
       run: |
         git clone https://github.com/rokcarl/ldap-test-server.git
         cd ldap-test-server
-        # run new server
         docker build -t ldap-server .
-        docker run -d --rm -ti --name ldap-server -p 389:389 ldap-server
-        # configure LDAP database
-        docker exec -it ldap-server /ldap-server/bin/openldap-additional-config.sh
+        docker run -d --rm --name ldap-server -p 389:389 ldap-server
 
-    - name: run lint
+    - name: Run Test
       run: |
         poetry run tox -e test
       env:
@@ -50,7 +46,7 @@ jobs:
         ADDOMAIN: ""
         SUFFIX: dc=example,dc=org
 
-    - name: upload cov
+    - name: Upload Coveragex
       uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml
