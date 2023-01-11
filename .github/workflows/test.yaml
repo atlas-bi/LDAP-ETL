@@ -4,6 +4,7 @@ on: [push, pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -20,6 +21,39 @@ jobs:
       run: |
         poetry install
 
+    - name: Install Microsoft ODBC
+        run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
+
+    - name: install sqlserver
+        uses: potatoqualitee/mssqlsuite@v1.5.1
+        with:
+          install: sqlengine, sqlpackage
+
+    - name: setup ldap
+      run: |
+        git clone https://github.com/rokcarl/ldap-test-server.git
+        cd ldap-test-server
+        # run new server
+        docker build -t ldap-server .
+        docker run --name ldap-server -p 389:389 ldap-server
+        # configure LDAP database
+        docker exec -it ldap-server /ldap-server/bin/openldap-additional-config.sh
+        # docker run -p 6443:443 --name phpldapadmin-service --hostname phpldapadmin-service --link ldap-server:ldap-host --env PHPLDAPADMIN\_LDAP\_HOSTS=ldap-host --detach osixia/phpldapadmin:0.6.8
+
     - name: run lint
       run: |
-        poetry run tox -e lint
+        poetry run tox -e test
+      env:
+        SERVERURI=localhost:389
+        ADUSERNAME=cn=admin,dc=example,dc=org
+        ADPASSWORD=admin
+        DATABASE=DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
+        ADDOMAIN=
+        SUFFIX=dc=example,dc=org
+
+    - name: upload cov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: true
+        verbose: true
