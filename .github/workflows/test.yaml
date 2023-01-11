@@ -1,8 +1,8 @@
-name: lint
+name: test
 on: [push, pull_request]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,16 +35,15 @@ jobs:
         cd ldap-test-server
         # run new server
         docker build -t ldap-server .
-        docker run --name ldap-server -p 389:389 ldap-server
+        docker run -d --rm -ti --name ldap-server -p 389:389 ldap-server
         # configure LDAP database
         docker exec -it ldap-server /ldap-server/bin/openldap-additional-config.sh
-        # docker run -p 6443:443 --name phpldapadmin-service --hostname phpldapadmin-service --link ldap-server:ldap-host --env PHPLDAPADMIN\_LDAP\_HOSTS=ldap-host --detach osixia/phpldapadmin:0.6.8
 
     - name: run lint
       run: |
         poetry run tox -e test
       env:
-        SERVERURI: localhost:389
+        SERVERURI: localhost
         ADUSERNAME: cn=admin,dc=example,dc=org
         ADPASSWORD: admin
         DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
