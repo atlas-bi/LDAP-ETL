@@ -36,8 +36,8 @@ GROUPSEARCHBASES = re.split(
     ),
 )
 
-USESSL = os.environ.get("USESSL", True).lower() == "true"
-USETLS = os.environ.get("USESSL", True).lower() == "true"
+USESSL = os.environ.get("USESSL", "true").lower() == "true"
+USETLS = os.environ.get("USESSL", "true").lower() == "true"
 
 # https://ldap3.readthedocs.io/
 
