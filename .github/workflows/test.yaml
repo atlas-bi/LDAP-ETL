@@ -44,12 +44,12 @@ jobs:
       run: |
         poetry run tox -e test
       env:
-        SERVERURI=localhost:389
-        ADUSERNAME=cn=admin,dc=example,dc=org
-        ADPASSWORD=admin
-        DATABASE=DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
-        ADDOMAIN=
-        SUFFIX=dc=example,dc=org
+        SERVERURI: localhost:389
+        ADUSERNAME: cn=admin,dc=example,dc=org
+        ADPASSWORD: admin
+        DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
+        ADDOMAIN: ""
+        SUFFIX: dc=example,dc=org
 
     - name: upload cov
       uses: codecov/codecov-action@v3
