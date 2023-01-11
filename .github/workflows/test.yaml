@@ -4,6 +4,12 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+    ldap:
+      image: bitnami/openldap
+      ports:
+        - '389:1389'
+        - '636:1636'
 
     steps:
     - name: Checkout
@@ -28,26 +34,18 @@ jobs:
       with:
         install: sqlengine, sqlpackage
 
-    - name: Install LDAP Server
-      run: |
-        git clone https://github.com/rokcarl/ldap-test-server.git
-        cd ldap-test-server
-        docker build -t ldap-server .
-        docker run -d --rm --name ldap-server -p 389:389 ldap-server
-        docker exec -t ldap-server /ldap-server/bin/openldap-additional-config.sh
-
     - name: Run Test
       run: |
         poetry run tox -e test
       env:
         SERVERURI: localhost
-        ADUSERNAME: cn=admin,dc=example,dc=org
-        ADPASSWORD: admin
+        ADUSERNAME: admin
+        ADPASSWORD: configpassword
         DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=tempdb;UID=sa;PWD=dbatools.I0
         ADDOMAIN: ""
         SUFFIX: dc=example,dc=org
         SEARCHBASES: users
-        GROUPSEARCHBASES: admins
+        GROUPSEARCHBASES: readers
         USESSL: True
         USETLS: True
 

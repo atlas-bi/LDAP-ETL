@@ -36,11 +36,10 @@ GROUPSEARCHBASES = re.split(
     ),
 )
 
-USESSL=True if os.environ.get("USESSL", True).lower() == "true" else False
-USETLS=True if os.environ.get("USESSL", True).lower() == "true" else False
+USESSL = os.environ.get("USESSL", True).lower() == "true"
+USETLS = os.environ.get("USESSL", True).lower() == "true"
 
 # https://ldap3.readthedocs.io/
-
 
 
 def prefixer(value: str, prefix: str) -> str:
@@ -85,7 +84,9 @@ def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
 
     return ""
 
+
 def main():
+    """Primary function."""
     # ssl is optional
     server = Server(SERVERURI, use_ssl=USESSL, get_info=ALL)
     conn = Connection(server, USERNAME, PASSWORD, auto_bind=True, auto_referrals=False)
@@ -157,7 +158,6 @@ def main():
                         if ou in GROUPSEARCHBASES:
                             memberships.append(memberrow)
 
-
     for base in GROUPSEARCHBASES:
 
         # ldap only returns 1000 records at a time. generator will get all.
@@ -207,5 +207,6 @@ def main():
         )
     conn.close()
 
-if __name__ == '__main__':
-    print(main())
+
+if __name__ == "__main__":
+    main()
