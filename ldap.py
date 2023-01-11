@@ -10,7 +10,6 @@ from ldap3 import ALL, SUBTREE, Connection, Server
 load_dotenv()
 
 SERVERURI = os.environ.get("SERVERURI", "ldap.example.com")
-
 PASSWORD = os.environ.get("ADPASSWORD", "exampl3")
 
 USERNAME = os.environ.get("ADUSERNAME", "me")
@@ -21,7 +20,7 @@ DATABASE = os.environ.get(
 )
 ADDOMAIN = os.environ.get("ADDOMAIN", "EXAMPLEHEALTH")
 DC = os.environ.get("DC", "ExampleHealth")
-SUFFIX = os.environ.get("SUFFIX", "'DC=' + DC + ',DC=net'")
+SUFFIX = os.environ.get("SUFFIX", "'DC='" + DC + "',DC=net'")
 SEARCHBASES = re.split(
     r"\s*,\s*",
     os.environ.get(
@@ -36,23 +35,10 @@ GROUPSEARCHBASES = re.split(
     ),
 )
 
+USESSL = os.environ.get("USESSL", "true").lower() == "true"
+USETLS = os.environ.get("USESSL", "true").lower() == "true"
+
 # https://ldap3.readthedocs.io/
-
-# ssl is optional
-server = Server(SERVERURI, use_ssl=True, get_info=ALL)
-conn = Connection(server, USERNAME, PASSWORD, auto_bind=True, auto_referrals=False)
-conn.start_tls()
-
-"""
-  1. employee search
-      this will create User and Membership table
-  2. group search
-      this will create the Groups table
-"""
-
-users = []
-memberships = []
-groups = []
 
 
 def prefixer(value: str, prefix: str) -> str:
@@ -98,107 +84,128 @@ def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
     return ""
 
 
-for base in SEARCHBASES:
+def main():
+    """Primary function."""
+    # ssl is optional
+    server = Server(SERVERURI, use_ssl=USESSL, get_info=ALL)
+    conn = Connection(server, USERNAME, PASSWORD, auto_bind=True, auto_referrals=False)
+    if USETLS:
+        conn.start_tls()
 
-    # ldap only returns 1000 records at a time. generator will get all.
-    generator = conn.extend.standard.paged_search(
-        search_base="OU=" + base + "," + SUFFIX,
-        search_filter="(CN=*)",
-        search_scope=SUBTREE,
-        attributes=["*"],
-        paged_size=1000,
-        generator=True,
+    """
+      1. employee search
+          this will create User and Membership table
+      2. group search
+          this will create the Groups table
+    """
+
+    users = []
+    memberships = []
+    groups = []
+    for base in SEARCHBASES:
+
+        # ldap only returns 1000 records at a time. generator will get all.
+        generator = conn.extend.standard.paged_search(
+            search_base="OU=" + base + "," + SUFFIX,
+            search_filter="(CN=*)",
+            search_scope=SUBTREE,
+            attributes=["*"],
+            paged_size=1000,
+            generator=True,
+        )
+
+        for chunk in generator:
+            data = dict(chunk)["attributes"]
+
+            row = [
+                base,
+                get_attribute("employeeID", data) or "",
+                prefixer(get_attribute("sAMAccountName", data), ADDOMAIN + "\\"),
+                get_attribute("displayName", data),
+                get_attribute(["cn", "name"], data),
+                get_attribute("givenName", data),
+                get_attribute("sn", data),
+                get_attribute("department", data),
+                get_attribute(["title", "description"], data),
+                get_attribute(["ipPhone", "telephoneNumber"], data),
+                get_attribute(["mail", "proxyAddresses", "userPrincipalName"], data),
+            ]
+
+            users.append(row)
+
+            if "memberOf" in data:
+
+                for member_set in data["memberOf"]:
+
+                    # one CN
+                    cn = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)[0]
+
+                    # for multiple OUs
+                    ou_list = re.findall(r"OU=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)
+
+                    for ou in ou_list:
+
+                        memberrow = [
+                            prefixer(
+                                get_attribute("sAMAccountName", data), ADDOMAIN + "\\"
+                            ),
+                            ou,
+                            cn,
+                        ]
+
+                        # only save three groups
+                        if ou in GROUPSEARCHBASES:
+                            memberships.append(memberrow)
+
+    for base in GROUPSEARCHBASES:
+
+        # ldap only returns 1000 records at a time. generator will get all.
+        generator = conn.extend.standard.paged_search(
+            search_base="OU=" + base + "," + SUFFIX,
+            search_filter="(CN=*)",
+            search_scope=SUBTREE,
+            attributes=["*"],
+            paged_size=1000,
+            generator=True,
+        )
+
+        for chunk in generator:
+            data = dict(chunk)["attributes"]
+
+            row = [
+                base,
+                get_attribute("sAMAccountName", data),
+                get_attribute("displayName", data),
+                get_attribute(["mail", "proxyAddresses", "userPrincipalName"], data),
+            ]
+
+            groups.append(row)
+
+    # close connection
+    conn.unbind()
+
+    # insert data to db
+    conn = pyodbc.connect(DATABASE, autocommit=True)
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
     )
-
-    for chunk in generator:
-        data = dict(chunk)["attributes"]
-
-        row = [
-            base,
-            get_attribute("employeeID", data) or "",
-            prefixer(get_attribute("sAMAccountName", data), ADDOMAIN + "\\"),
-            get_attribute("displayName", data),
-            get_attribute(["cn", "name"], data),
-            get_attribute("givenName", data),
-            get_attribute("sn", data),
-            get_attribute("department", data),
-            get_attribute(["title", "description"], data),
-            get_attribute(["ipPhone", "telephoneNumber"], data),
-            get_attribute(["mail", "proxyAddresses", "userPrincipalName"], data),
-        ]
-
-        users.append(row)
-
-        if "memberOf" in data:
-
-            for member_set in data["memberOf"]:
-
-                # one CN
-                cn = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)[0]
-
-                # for multiple OUs
-                ou_list = re.findall(r"OU=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)
-
-                for ou in ou_list:
-
-                    memberrow = [
-                        prefixer(
-                            get_attribute("sAMAccountName", data), ADDOMAIN + "\\"
-                        ),
-                        ou,
-                        cn,
-                    ]
-
-                    # only save three groups
-                    if ou in GROUPSEARCHBASES:
-                        memberships.append(memberrow)
-
-
-for base in GROUPSEARCHBASES:
-
-    # ldap only returns 1000 records at a time. generator will get all.
-    generator = conn.extend.standard.paged_search(
-        search_base="OU=" + base + "," + SUFFIX,
-        search_filter="(CN=*)",
-        search_scope=SUBTREE,
-        attributes=["*"],
-        paged_size=1000,
-        generator=True,
-    )
-
-    for chunk in generator:
-        data = dict(chunk)["attributes"]
-
-        row = [
-            base,
-            get_attribute("sAMAccountName", data),
-            get_attribute("displayName", data),
-            get_attribute(["mail", "proxyAddresses", "userPrincipalName"], data),
-        ]
-
-        groups.append(row)
-
-# close connection
-conn.unbind()
-
-# insert data to db
-conn = pyodbc.connect(DATABASE, autocommit=True)
-cursor = conn.cursor()
-cursor.execute(
-    "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
-)
-cursor.executemany(
-    "INSERT INTO [LDAP].[dbo].[Users] (Base,EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
-    users,
-)
-if len(memberships) > 0:
     cursor.executemany(
-        "INSERT INTO [LDAP].[dbo].[Memberships] (AccountName, GroupType, GroupName,LoadDate) VALUES (?,?,?,GetDate())",
-        memberships,
+        "INSERT INTO [LDAP].[dbo].[Users] (Base,EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
+        users,
     )
-if len(groups) > 0:
-    cursor.executemany(
-        "INSERT INTO [LDAP].[dbo].[Groups] (GroupType, AccountName, GroupName, GroupEmail,LoadDate) VALUES (?,?,?,?,GetDate())",
-        groups,
-    )
-conn.close()
+    if len(memberships) > 0:
+        cursor.executemany(
+            "INSERT INTO [LDAP].[dbo].[Memberships] (AccountName, GroupType, GroupName,LoadDate) VALUES (?,?,?,GetDate())",
+            memberships,
+        )
+    if len(groups) > 0:
+        cursor.executemany(
+            "INSERT INTO [LDAP].[dbo].[Groups] (GroupType, AccountName, GroupName, GroupEmail,LoadDate) VALUES (?,?,?,?,GetDate())",
+            groups,
+        )
+    conn.close()
+
+
+if __name__ == "__main__":
+    main()

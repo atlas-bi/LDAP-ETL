@@ -5,6 +5,9 @@
 </p>
 <p align="center">
 <a href="https://www.codacy.com/gh/atlas-bi/LDAP-ETL/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlas-bi/LDAP-ETL&amp;utm_campaign=Badge_Grade"><img alt="codacy" src="https://app.codacy.com/project/badge/Grade/0bf456a89c4444709d5d9897722f6181"></a>
+ <a href="https://codecov.io/gh/atlas-bi/LDAP-ETL" >
+ <img src="https://codecov.io/gh/atlas-bi/LDAP-ETL/branch/master/graph/badge.svg?token=OVlXC2ReOx"/>
+ </a>
  <a href="https://sonarcloud.io/project/overview?id=atlas-bi_LDAP-ETL"><img alt="maintainability" src="https://sonarcloud.io/api/project_badges/measure?project=atlas-bi_LDAP-ETL&metric=sqale_rating"></a>
  <a href="https://discord.gg/hdz2cpygQD"><img alt="discord chat" src="https://badgen.net/discord/online-members/hdz2cpygQD/" /></a>
  <a href="https://github.com/atlas-bi/LDAP-ETL/releases"><img alt="latest release" src="https://badgen.net/github/release/atlas-bi/LDAP-ETL" /></a>
@@ -48,9 +51,13 @@ ADUSERNAME=EXAMPLEHEALTH\me
 ADPASSWORD=exampl3
 DATABASE=DRIVER={ODBC Driver 17 for SQL Server};SERVER=atlas;DATABASE=LDAP;UID=datagov;PWD=123
 ADDOMAIN=EXAMPLEHEALTH
-SUFFIX='DC=examplehealth,DC=net'
+SUFFIX=DC=examplehealth,DC=net
 SEARCHBASES=EPIC, Employees, Doctors, Non-Staff, Students, Volunteers
 GROUPSEARCHBASES=Email Distribution Groups, Room & Shared Mailboxes,Access & Permissions
+
+# LDAP Configuration
+USESSL=True
+USETLS=True
 ```
 
 ### Running
