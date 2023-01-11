@@ -58,7 +58,7 @@ jobs:
         USESSL: False
         USETLS: False
 
-    - name: Upload Coveragex
+    - name: Upload Coverage
       uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml
