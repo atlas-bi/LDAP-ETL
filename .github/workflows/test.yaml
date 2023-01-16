@@ -1,14 +1,26 @@
-name: lint
+name: test
 on: [push, pull_request]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
+    services:
+      ldap:
+        image: bitnami/openldap
+        ports:
+          - '389:1389'
+          - '636:1636'
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: install python
+    - name: Check LDAP is Up
+      run: |
+        sudo apt install ldap-utils
+        ldapsearch -x -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w "adminpassword"
+
+    - name: Install Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
@@ -16,10 +28,39 @@ jobs:
     - name: Setup Poetry
       uses: snok/install-poetry@v1
 
-    - name: Install
-      run: |
-        poetry install
+    - name: Install Python Deps
+      run: poetry install
 
-    - name: run lint
+    - name: Install Microsoft ODBC
+      run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
+
+    - name: Install Sql Server
+      uses: potatoqualitee/mssqlsuite@v1.5.1
+      with:
+        install: sqlengine, sqlpackage
+
+    - name: Setup Database
       run: |
-        poetry run tox -e lint
+        sqlcmd -S localhost -U sa -P dbatools.I0 -d Master -i LDAPDatabaseCreationScript.sql
+
+    - name: Run Test
+      run: |
+        poetry run tox -e test
+      env:
+        SERVERURI: ldap://localhost:389
+        ADUSERNAME: cn=admin,dc=example,dc=org
+        ADPASSWORD: adminpassword
+        DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=LDAP;UID=sa;PWD=dbatools.I0;TrustServerCertificate=YES
+        ADDOMAIN: ""
+        SUFFIX: dc=example,dc=org
+        SEARCHBASES: users
+        GROUPSEARCHBASES: readers
+        USESSL: False
+        USETLS: False
+
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: true
+        verbose: true
