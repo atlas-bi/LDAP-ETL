@@ -103,7 +103,6 @@ def main():
     memberships = []
     groups = []
     for base in SEARCHBASES:
-
         # ldap only returns 1000 records at a time. generator will get all.
         generator = conn.extend.standard.paged_search(
             search_base="OU=" + base + "," + SUFFIX,
@@ -134,9 +133,7 @@ def main():
             users.append(row)
 
             if "memberOf" in data:
-
                 for member_set in data["memberOf"]:
-
                     # one CN
                     cn = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)[0]
 
@@ -144,7 +141,6 @@ def main():
                     ou_list = re.findall(r"OU=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)
 
                     for ou in ou_list:
-
                         memberrow = [
                             prefixer(
                                 get_attribute("sAMAccountName", data), ADDOMAIN + "\\"
@@ -158,7 +154,6 @@ def main():
                             memberships.append(memberrow)
 
     for base in GROUPSEARCHBASES:
-
         # ldap only returns 1000 records at a time. generator will get all.
         generator = conn.extend.standard.paged_search(
             search_base="OU=" + base + "," + SUFFIX,
