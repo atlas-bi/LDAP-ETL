@@ -8,8 +8,8 @@ jobs:
       ldap:
         image: bitnami/openldap
         ports:
-          - '389:1389'
-          - '636:1636'
+        - 389:1389
+        - 636:1636
 
     steps:
     - name: Checkout
@@ -51,12 +51,12 @@ jobs:
         ADUSERNAME: cn=admin,dc=example,dc=org
         ADPASSWORD: adminpassword
         DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=LDAP;UID=sa;PWD=dbatools.I0;TrustServerCertificate=YES
-        ADDOMAIN: ""
+        ADDOMAIN: ''
         SUFFIX: dc=example,dc=org
         SEARCHBASES: users
         GROUPSEARCHBASES: readers
-        USESSL: False
-        USETLS: False
+        USESSL: false
+        USETLS: false
 
     - name: Upload Coverage
       uses: codecov/codecov-action@v3
