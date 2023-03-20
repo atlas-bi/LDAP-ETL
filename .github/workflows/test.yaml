@@ -15,6 +15,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Remove Azure source
+      run: |
+        sudo sed -i 's/azure\.//' /etc/apt/sources.list
+        sudo apt update
+
     - name: Check LDAP is Up
       run: |
         sudo apt install ldap-utils
