@@ -62,8 +62,8 @@ jobs:
         LDAP_BASE: dc=example,dc=org
         LDAP_USER_SEARCH: (objectClass=inetOrgPerson)
         LDAP_GROUP_SEARCH: (objectClass=groupOfNames)
-        USE_SSL: false
-        USE_TLS: false
+        LDAP_USE_SSL: false
+        LDAP_USE_TLS: false
 
     - name: 📤 Upload Coverage
       uses: codecov/codecov-action@v3
