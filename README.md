@@ -93,3 +93,23 @@ DATABASE=DRIVER={ODBC Driver 17 for SQL Server};SERVER=atlas;DATABASE=LDAP;UID=d
 ## Other Tools
 
 [Active Directory Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/adexplorer) is a useful tool to browse your LDAP setup to find the correct bases and dc.
+
+## Testing
+
+1. Start up a ldap server `docker run  -p 389:1389 bitnami/openldap:latest`
+2. Set testing env variables
+
+```env
+LDAP_HOST=ldap://localhost:389
+LDAP_USERNAME=cn=admin,dc=example,dc=org
+LDAP_PASSWORD=adminpassword
+DATABASE=>> your test db connection
+AD_DOMAIN=''
+LDAP_BASE=dc=example,dc=org
+LDAP_USER_SEARCH=(objectClass=inetOrgPerson)
+LDAP_GROUP_SEARCH=(objectClass=groupOfNames)
+LDAP_USE_SSL=false
+LDAP_USE_TLS=false
+```
+
+3. Run tests `poetry run tox -e test`

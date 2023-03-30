@@ -206,8 +206,11 @@ def main():
             continue
 
         attributes = data["attributes"]
+
         ous = get_ous(
-            dn.parse_dn(get_attribute(["distinguishedName", "dn"], attributes))
+            dn.parse_dn(
+                get_attribute(["distinguishedName", "dn"], attributes) or LDAP_BASE
+            )
         )
 
         # if we have a custom AD OU filter
@@ -216,7 +219,10 @@ def main():
         ):
             row = [
                 get_ou(
-                    dn.parse_dn(get_attribute(["distinguishedName", "dn"], attributes))
+                    dn.parse_dn(
+                        get_attribute(["distinguishedName", "dn"], attributes)
+                        or LDAP_BASE
+                    )
                 ),  # tallest ou is used.
                 get_attribute(LDAP_GROUP_USERNAME.split(","), attributes),
                 get_attribute(LDAP_GROUP_DISPLAYNAME.split(","), attributes),
