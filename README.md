@@ -25,7 +25,7 @@ Use the [`LDAPDatabaseCreationScript.sql`](https://raw.githubusercontent.com/atl
 
 ### Dependencies
 
-This ETL uses python > 3.7. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
+This ETL uses python. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
 [C++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) are needed on Windows OS.
 
@@ -46,18 +46,44 @@ Create a `.env` file with the following settings, modified to fit your needs.
 (or, pass the variables as environment variables)
 
 ```env
-SERVERURI=ldap.example.com
-ADUSERNAME=EXAMPLEHEALTH\me
-ADPASSWORD=exampl3
-DATABASE=DRIVER={ODBC Driver 17 for SQL Server};SERVER=atlas;DATABASE=LDAP;UID=datagov;PWD=123
-ADDOMAIN=EXAMPLEHEALTH
-SUFFIX=DC=examplehealth,DC=net
-SEARCHBASES=EPIC, Employees, Doctors, Non-Staff, Students, Volunteers
-GROUPSEARCHBASES=Email Distribution Groups, Room & Shared Mailboxes,Access & Permissions
+LDAP_HOST=localhost
+LDAP_USERNAME=cn=admin,dc=example,dc=org
+LDAP_PASSWORD=adminpassword
+LDAP_BASE=dc=example,dc=org
+LDAP_GROUP_SEARCH=(objectClass=group)
+LDAP_USER_SEARCH=(&(objectClass=person)(sAMAccountName=*))
+LDAP_USE_SSL=False
+LDAP_USE_TLS=False
 
-# LDAP Configuration
-USESSL=True
-USETLS=True
+AD_DOMAIN=EXAMPLEHEALTH
+
+# optionally limit results to dn's that contain an ou.
+# this is not possible in AD search filters, so we do it
+# in the python. This should be a comma list of OU names.
+# for example LDAP_GROUP_OU=Email Distribution Groups,Another OU
+# this will also pull in sub OUs.
+LDAP_GROUP_OU=Email Distribution Groups,Room & Shared Mailboxes,Access & Permissions
+
+# fields can be a single attribute, or a comma list of attributes to try to find. Default values are coded in so these are optional overrides.
+LDAP_GROUP_USERNAME=sAMAccountName
+LDAP_GROUP_DISPLAYNAME=displayName
+LDAP_GROUP_EMAIL=mail,email
+
+LDAP_USER_SEARCH=(&(objectClass=person)(sAMAccountName=*))
+LDAP_USER_EMPLOYEEID=employeeID
+LDAP_USER_ACCOUNTNAME=sAMAccountName
+LDAP_USER_DISPLAYNAME=displayName
+LDAP_USER_FULLNAME=cn,name
+LDAP_USER_FIRSTNAME=givenName
+LDAP_USER_LASTNAME=sn
+LDAP_USER_DEPARTMENT=department
+LDAP_USER_TITLE=title,descirption
+LDAP_USER_PHONE=ipPhone,telephoneNumber
+LDAP_USER_EMAIL=mail,proxyAddresses,userPrincipalName
+LDAP_USER_PHOTO=thumbnailPhoto,profilePhoto
+
+DATABASE=DRIVER={ODBC Driver 17 for SQL Server};SERVER=atlas;DATABASE=LDAP;UID=datagov;PWD=123
+
 ```
 
 ### Running

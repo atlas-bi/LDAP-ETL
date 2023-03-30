@@ -1,9 +1,13 @@
-name: test
+name: 🧪 test
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
     services:
       ldap:
         image: bitnami/openldap
@@ -12,43 +16,41 @@ jobs:
         - 636:1636
 
     steps:
-    - name: Checkout
+    - name: 💾 Checkout
       uses: actions/checkout@v3
 
-    - name: Remove Azure source
-      run: |
-        sudo sed -i 's/azure\.//' /etc/apt/sources.list
-        sudo apt update
+    - name: 🧹 Cleanup apt list
+      uses: christopherpickering/no-azure-action@v1.1.0
 
-    - name: Check LDAP is Up
+    - name: ✅ Check LDAP is Up
       run: |
         sudo apt install ldap-utils
         ldapsearch -x -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w "adminpassword"
 
-    - name: Install Python
+    - name: 🐍 Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Setup Poetry
+    - name: 🎶 Setup Poetry
       uses: snok/install-poetry@v1
 
-    - name: Install Python Deps
+    - name: 📥 Install
       run: poetry install
 
-    - name: Install Microsoft ODBC
+    - name: 📇 Install Microsoft ODBC
       run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
 
-    - name: Install Sql Server
+    - name: 📇 Install Sql Server
       uses: potatoqualitee/mssqlsuite@v1.5.1
       with:
         install: sqlengine, sqlpackage
 
-    - name: Setup Database
+    - name: 💽 Setup Database
       run: |
         sqlcmd -S localhost -U sa -P dbatools.I0 -d Master -i LDAPDatabaseCreationScript.sql
 
-    - name: Run Test
+    - name: 🧪 Run Test
       run: |
         poetry run tox -e test
       env:
@@ -63,7 +65,7 @@ jobs:
         USESSL: false
         USETLS: false
 
-    - name: Upload Coverage
+    - name: 📤 Upload Coverage
       uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml

@@ -1,4 +1,4 @@
-name: Codespell
+name: ✔️ Codespell
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-    - name: Codespell action
+    - name: 💾 Checkout
+      uses: actions/checkout@v3
+    - name: ✔️ Codespell
       uses: codespell-project/actions-codespell@master
-      with:
-        skip: '*.min.js'
