@@ -39,7 +39,7 @@ LDAP_USER_FULLNAME = os.environ.get("LDAP_USER_FULLNAME", "cn,name")
 LDAP_USER_FIRSTNAME = os.environ.get("LDAP_USER_FIRSTNAME", "givenName")
 LDAP_USER_LASTNAME = os.environ.get("LDAP_USER_LASTNAME", "sn")
 LDAP_USER_DEPARTMENT = os.environ.get("LDAP_USER_DEPARTMENT", "department")
-LDAP_USER_TITLE = os.environ.get("LDAP_USER_TITLE", "title,descirption")
+LDAP_USER_TITLE = os.environ.get("LDAP_USER_TITLE", "title,description")
 LDAP_USER_PHONE = os.environ.get("LDAP_USER_PHONE", "ipPhone,telephoneNumber")
 LDAP_USER_EMAIL = os.environ.get(
     "LDAP_USER_EMAIL", "mail,proxyAddresses,userPrincipalName"
