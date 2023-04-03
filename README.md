@@ -50,12 +50,12 @@ LDAP_HOST=localhost
 LDAP_USERNAME=cn=admin,dc=example,dc=org
 LDAP_PASSWORD=adminpassword
 LDAP_BASE=dc=example,dc=org
-LDAP_GROUP_SEARCH=(objectClass=group)
-LDAP_USER_SEARCH=(&(objectClass=person)(sAMAccountName=*))
 LDAP_USE_SSL=False
 LDAP_USE_TLS=False
 
 AD_DOMAIN=EXAMPLEHEALTH
+
+LDAP_GROUP_SEARCH=(objectClass=group)
 
 # optionally limit results to dn's that contain an ou.
 # this is not possible in AD search filters, so we do it

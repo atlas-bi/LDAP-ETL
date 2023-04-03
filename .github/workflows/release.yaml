@@ -25,7 +25,12 @@ jobs:
       with:
         useLockFile: false
 
-    - name: 🐍 Setup Poetry
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: 🎶 Setup Poetry
       uses: snok/install-poetry@v1
 
     - name: 🚀 Semantic Release
