@@ -61,6 +61,7 @@ CREATE TABLE [dbo].[Users](
 	[Phone] [nvarchar](max) NULL,
 	[Email] [nvarchar](max) NULL,
 	[LoadDate] [date],
+	[Photo] [nvarchar](max) NULL,
 PRIMARY KEY CLUSTERED
 (
 	[UserId] ASC
