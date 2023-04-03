@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "atlas-etl-ldap"
-version = "1.1.0"
+version = "2.0.0-alpha.1"
 description = "Atlas BI Library LDAP ETL"
 authors = ["Christopher Pickering <cpickering@rhc.net>"]
 license = "GPL-3.0-or-later"
@@ -15,24 +15,17 @@ python-dotenv = "^1.0.0"
 black = "^23.0.0"
 isort = "^5.10.1"
 mypy = "^1.0"
-pylint = "^2.15.8"
-flake8 = "^6.0.0"
-flake8-docstrings = "^1.6.0"
-flake8-typing-imports = "^1.14.0"
-flake8-builtins = "^2.0.1"
-pep8-naming = "^0.13.2"
-flake8-comprehensions = "^3.10.1"
-flake8-print = "^5.0.0"
-flake8-simplify = "^0.19.3"
-flake8-variables-names = "^0.0.5"
 tox = "^4.0.8"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 pytest-xdist = "^3.1.0"
+ruff = "^0.0.260"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.pylint.messages_control]
-disable = "C0103,R0914,R1702,I1101"
+[tool.ruff]
+extend-exclude = ['test*']
+ignore = ['E501', 'D211', 'D213']
+select = ['F', 'E', 'W', 'N', 'D', 'S', 'B', 'C4', 'T20', 'Q', 'SIM', 'ERA', 'PL', 'RUF']
