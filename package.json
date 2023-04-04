@@ -1,6 +1,6 @@
 {
   "name": "atlas-etl-ldap",
-  "version": "2.0.0",
+  "version": "2.0.0-alpha.2",
   "description": "Atlas BI Library LDAP ETL",
   "private": true,
   "scripts": {

@@ -171,24 +171,24 @@ def main():
 
         users.append(row)
 
-        if "memberOf" in data:
-            for member_set in data["memberOf"]:
+        if "memberOf" in attributes:
+            for member_set in attributes["memberOf"]:
                 # one CN
                 cn = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)[0]
-
                 # for multiple OUs
                 ou_list = re.findall(r"OU=(.+?)(?=,?(?:OU|DC|CN|$))", member_set)
 
                 for ou in ou_list:
                     memberrow = [
                         prefixer(
-                            get_attribute("sAMAccountName", data), AD_DOMAIN + "\\"
+                            get_attribute("sAMAccountName", attributes),
+                            AD_DOMAIN + "\\",
                         ),
                         ou,
                         cn,
                     ]
 
-                    if not LDAP_GROUP_OU or ou in LDAP_GROUP_OU.split():
+                    if not LDAP_GROUP_OU or ou in LDAP_GROUP_OU.split(","):
                         memberships.append(memberrow)
 
     generator = conn.extend.standard.paged_search(
