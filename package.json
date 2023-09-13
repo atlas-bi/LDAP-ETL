@@ -1,6 +1,6 @@
 {
   "name": "atlas-etl-ldap",
-  "version": "2.0.8",
+  "version": "2.0.12",
   "description": "Atlas BI Library LDAP ETL",
   "private": true,
   "scripts": {
@@ -19,14 +19,14 @@
   "homepage": "https://github.com/atlas-bi/LDAP-ETL#readme",
   "devDependencies": {
     "@semantic-release/changelog": "6.0.3",
-    "@semantic-release/commit-analyzer": "10.0.1",
+    "@semantic-release/commit-analyzer": "10.0.4",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
-    "@semantic-release/github": "9.0.3",
-    "@semantic-release/npm": "10.0.4",
-    "@semantic-release/release-notes-generator": "11.0.4",
+    "@semantic-release/github": "9.0.4",
+    "@semantic-release/npm": "10.0.5",
+    "@semantic-release/release-notes-generator": "11.0.7",
     "cz-conventional-changelog": "3.3.0",
-    "semantic-release": "21.0.7",
+    "semantic-release": "21.1.1",
     "commitizen": "4.3.0"
   },
   "config": {
