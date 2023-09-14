@@ -1,7 +1,7 @@
 <h1 align="center">LDAP ETL</h1>
 <h4 align="center">Atlas BI Library ETL | LDAP Supplimentary ETL</h4>
 <p align="center">
- <a href="https://www.atlas.bi" target="_blank">Website</a> • <a href="https://demo.atlas.bi" target="_blank">Demo</a> • <a href="https://www.atlas.bi/docs/bi-library/" target="_blank">Documentation</a> • <a href="https://discord.gg/hdz2cpygQD" target="_blank">Chat</a>
+ <a href="https://www.atlas.bi" target="_blank">Website</a> • <a href="https://demo.atlas.bi" target="_blank">Demo</a> • <a href="https://www.atlas.bi/docs/library/" target="_blank">Documentation</a> • <a href="https://discord.gg/hdz2cpygQD" target="_blank">Chat</a>
 </p>
 <p align="center">
 <a href="https://www.codacy.com/gh/atlas-bi/LDAP-ETL/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlas-bi/LDAP-ETL&amp;utm_campaign=Badge_Grade"><img alt="codacy" src="https://app.codacy.com/project/badge/Grade/0bf456a89c4444709d5d9897722f6181"></a>
