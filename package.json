@@ -1,6 +1,6 @@
 {
   "name": "atlas-etl-ldap",
-  "version": "2.0.25",
+  "version": "2.0.26",
   "description": "Atlas BI Library LDAP ETL",
   "private": true,
   "scripts": {
@@ -26,7 +26,7 @@
     "@semantic-release/npm": "11.0.1",
     "@semantic-release/release-notes-generator": "12.1.0",
     "cz-conventional-changelog": "3.3.0",
-    "semantic-release": "22.0.8",
+    "semantic-release": "22.0.10",
     "commitizen": "4.3.0"
   },
   "config": {
