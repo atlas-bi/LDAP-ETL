@@ -28,7 +28,7 @@ jobs:
         ldapsearch -x -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w "adminpassword"
 
     - name: 🐍 Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
