@@ -7,7 +7,7 @@ license = "GPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.8.2"
-pyodbc = "^4.0.34"
+pyodbc = "^5.0.0"
 ldap3 = "^2.9.1"
 python-dotenv = "^1.0.0"
 
@@ -19,7 +19,7 @@ tox = "^4.0.8"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 pytest-xdist = "^3.1.0"
-ruff = "^0.0.290"
+ruff = "^0.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
