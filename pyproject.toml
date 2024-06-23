@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "atlas-etl-ldap"
-version = "2.0.4"
+version = "2.0.5"
 description = "Atlas BI Library LDAP ETL"
 authors = ["Christopher Pickering <cpickering@rhc.net>"]
 license = "GPL-3.0-or-later"
@@ -12,7 +12,7 @@ ldap3 = "^2.9.1"
 python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.0.0"
+black = "^24.0.0"
 isort = "^5.10.1"
 mypy = "^1.0"
 tox = "^4.0.8"
