@@ -161,19 +161,7 @@ def main():
             continue
 
         attributes = data["attributes"]
-        # mang = ""
-        # if "manager" in attributes:
-        #     for mgr in attributes["manager"]:
-        #             # one CN
-        #             try:
-        #                 mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[-1]
-        #             except:
-        #                 pass
-        # if "manager" in attributes:
-            # try:
-            #     mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", attributes["manager"])
-            # except:
-            #     pass
+        
         row = [
             get_attribute(LDAP_USER_EMPLOYEEID.split(","), attributes) or "",
             prefixer(
@@ -189,13 +177,12 @@ def main():
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
-            # mang,
             get_cn(
                     dn.parse_dn(
                         get_attribute(["manager", "dn"], attributes)
                         or LDAP_BASE
                     )
-                ),  # tallest ou is used.
+                ), 
         ]
 
         users.append(row)
