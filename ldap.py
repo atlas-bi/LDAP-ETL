@@ -167,7 +167,7 @@ def main():
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
-            re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", ["manager"]),
+            re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", attributes["manager"]),
         ]
 
         users.append(row)
