@@ -170,6 +170,7 @@ def main():
         ]
 
         users.append(row)
+        print(attributes)
 
         if "memberOf" in attributes:
             for member_set in attributes["memberOf"]:
