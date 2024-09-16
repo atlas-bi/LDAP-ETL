@@ -75,6 +75,16 @@ def get_ous(dn: List[Tuple[str, ...]]) -> List[str]:
     """Get a list of OUs from a dn."""
     return [x[1] for x in dn if x[0].lower() == "ou"]
 
+def get_cn(dn: List[Tuple[str, ...]]) -> Optional[str]:
+    """Get the top CN from a dn."""
+    cns = get_cns(dn)
+    return get_cns(dn)[-1] if cns else None
+
+
+def get_cns(dn: List[Tuple[str, ...]]) -> List[str]:
+    """Get a list of CNs from a dn."""
+    return [x[1] for x in dn if x[0].lower() == "cn"]
+
 
 def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
     """Get LDAP attribute value from data.
@@ -151,14 +161,14 @@ def main():
             continue
 
         attributes = data["attributes"]
-        mang = ""
-        if "manager" in attributes:
-            for mgr in attributes["manager"]:
-                    # one CN
-                    try:
-                        mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[-1]
-                    except:
-                        pass
+        # mang = ""
+        # if "manager" in attributes:
+        #     for mgr in attributes["manager"]:
+        #             # one CN
+        #             try:
+        #                 mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[-1]
+        #             except:
+        #                 pass
         # if "manager" in attributes:
             # try:
             #     mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", attributes["manager"])
@@ -179,7 +189,13 @@ def main():
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
-            mang,
+            # mang,
+            get_cn(
+                    dn.parse_dn(
+                        get_attribute(["manager", "dn"], attributes)
+                        or LDAP_BASE
+                    )
+                ),  # tallest ou is used.
         ]
 
         users.append(row)
