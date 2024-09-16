@@ -151,7 +151,11 @@ def main():
             continue
 
         attributes = data["attributes"]
-        cn = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", attributes["manager"])
+        mang = ""
+        if "manager" in attributes:
+            for mgr in attributes["manager"]:
+                # one CN
+                mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[0]
         row = [
             get_attribute(LDAP_USER_EMPLOYEEID.split(","), attributes) or "",
             prefixer(
@@ -167,7 +171,7 @@ def main():
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
-            cn,
+            mang,
         ]
 
         users.append(row)
