@@ -167,12 +167,7 @@ def main():
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
-            get_ou(
-                    dn.parse_dn(
-                        get_attribute(["manager", "dn"], attributes)
-                        or LDAP_BASE
-                    )
-                ),  # tallest ou is used.
+            re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", ["manager"]),
         ]
 
         users.append(row)
