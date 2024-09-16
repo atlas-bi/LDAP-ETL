@@ -167,6 +167,12 @@ def main():
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
+            get_ou(
+                    dn.parse_dn(
+                        get_attribute(["manager", "dn"], attributes)
+                        or LDAP_BASE
+                    )
+                ),  # tallest ou is used.
         ]
 
         users.append(row)
@@ -241,7 +247,7 @@ def main():
         "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
     )
     cursor.executemany(
-        "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
+        "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,Manager,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,GetDate())",
         users,
     )
     if len(memberships) > 0:
