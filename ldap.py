@@ -156,7 +156,7 @@ def main():
             for mgr in attributes["manager"]:
                 # one CN
                 try:
-                    mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[0]
+                    mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)
                 except:
                     pass
         row = [
