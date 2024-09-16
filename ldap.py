@@ -152,6 +152,13 @@ def main():
 
         attributes = data["attributes"]
         mang = ""
+        if "manager" in attributes:
+            for mgr in attributes["manager"]:
+                    # one CN
+                    try:
+                        mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[-1]
+                    except:
+                        pass
         # if "manager" in attributes:
             # try:
             #     mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", attributes["manager"])
