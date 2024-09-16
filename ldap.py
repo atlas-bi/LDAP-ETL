@@ -151,7 +151,7 @@ def main():
             continue
 
         attributes = data["attributes"]
-
+        cn = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", attributes["manager"])
         row = [
             get_attribute(LDAP_USER_EMPLOYEEID.split(","), attributes) or "",
             prefixer(
@@ -167,7 +167,7 @@ def main():
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
-            re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", attributes["manager"]),
+            cn,
         ]
 
         users.append(row)
