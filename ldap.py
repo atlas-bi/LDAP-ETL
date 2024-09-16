@@ -155,7 +155,10 @@ def main():
         if "manager" in attributes:
             for mgr in attributes["manager"]:
                 # one CN
-                mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[0]
+                try:
+                    mang = re.findall(r"CN=(.+?)(?=,?(?:OU|DC|CN|$))", mgr)[0]
+                except:
+                    pass
         row = [
             get_attribute(LDAP_USER_EMPLOYEEID.split(","), attributes) or "",
             prefixer(
