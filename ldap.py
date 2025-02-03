@@ -1,4 +1,5 @@
 """Atlas Supplementary LDAP ETL."""
+
 import os
 import re
 from base64 import b64encode
