@@ -4,6 +4,7 @@ version = "2.0.1"
 description = "Atlas BI Library LDAP ETL"
 authors = ["Christopher Pickering <cpickering@rhc.net>"]
 license = "GPL-3.0-or-later"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.8.2"
