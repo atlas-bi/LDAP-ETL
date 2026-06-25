@@ -10,11 +10,14 @@ jobs:
 
     services:
       ldap:
-        image: bitnami/openldap
+        image: osixia/openldap:1.5.0
         ports:
-        - 389:1389
-        - 636:1636
-
+        - 389:389
+        - 636:636
+        env:
+          LDAP_ORGANISATION: "example"
+          LDAP_DOMAIN: "example.org"
+          LDAP_ADMIN_PASSWORD: "adminpassword"
     steps:
     - name: 💾 Checkout
       uses: actions/checkout@v4
