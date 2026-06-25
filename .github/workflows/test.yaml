@@ -47,7 +47,7 @@ jobs:
     - name: 📇 Install Sql Server
       uses: potatoqualitee/mssqlsuite@v1.5.1
       with:
-        install: sqlengine, sqlpackage, sqlcmd
+        install: sqlengine, sqlpackage
 
     - name: 💽 Setup Database
       run: |
