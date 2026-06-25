@@ -71,7 +71,7 @@ jobs:
         LDAP_USE_TLS: false
 
     - name: 📤 Upload Coverage
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         files: ./coverage.xml
         verbose: true
