@@ -47,11 +47,13 @@ jobs:
     - name: 📇 Install Sql Server
       uses: potatoqualitee/mssqlsuite@v1.5.1
       with:
-        install: sqlengine, sqlpackage
+        install: sqlengine, sqlpackage, sqlcmd
 
     - name: 💽 Setup Database
       run: |
         sqlcmd -S localhost -U sa -P dbatools.I0 -d Master -i LDAPDatabaseCreationScript.sql
+      env:
+        PATH: ${{ env.PATH }}:/opt/mssql-tools18/bin
 
     - name: 🧪 Run Test
       run: |
