@@ -20,7 +20,7 @@ jobs:
           LDAP_ADMIN_PASSWORD: "adminpassword"
     steps:
     - name: 💾 Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: 🧹 Cleanup apt list
       uses: christopherpickering/no-azure-action@v1.1.0
