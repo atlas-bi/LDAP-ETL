@@ -33,7 +33,7 @@ jobs:
     - name: 🐍 Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.14'
 
     - name: 🎶 Setup Poetry
       uses: snok/install-poetry@v1
@@ -45,7 +45,7 @@ jobs:
       run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
 
     - name: 📇 Install Sql Server
-      uses: potatoqualitee/mssqlsuite@v1.5.1
+      uses: potatoqualitee/mssqlsuite@v1.12
       with:
         install: sqlengine, sqlpackage
 
