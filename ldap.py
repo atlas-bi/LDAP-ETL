@@ -1,4 +1,5 @@
 """Atlas Supplementary LDAP ETL."""
+
 import os
 import re
 from base64 import b64encode
@@ -75,6 +76,7 @@ def get_ous(dn: List[Tuple[str, ...]]) -> List[str]:
     """Get a list of OUs from a dn."""
     return [x[1] for x in dn if x[0].lower() == "ou"]
 
+
 def get_cn(dn: List[Tuple[str, ...]]) -> Optional[str]:
     """Get the top CN from a dn."""
     cns = get_cns(dn)
@@ -125,7 +127,7 @@ def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
     return ""
 
 
-def main():
+def main():  # noqa: PLR0912
     """Primary function."""
     server = Server(LDAP_HOST, use_ssl=LDAP_USE_SSL, get_info=ALL)
     conn = Connection(
@@ -161,7 +163,7 @@ def main():
             continue
 
         attributes = data["attributes"]
-        
+
         row = [
             get_attribute(LDAP_USER_EMPLOYEEID.split(","), attributes) or "",
             prefixer(
@@ -178,11 +180,8 @@ def main():
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
             get_cn(
-                    dn.parse_dn(
-                        get_attribute(["manager", "dn"], attributes)
-                        or LDAP_BASE
-                    )
-                ), 
+                dn.parse_dn(get_attribute(["manager", "dn"], attributes) or LDAP_BASE)
+            ),
         ]
 
         users.append(row)
@@ -256,16 +255,17 @@ def main():
     cursor.execute(
         "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
     )
-    cursor.executemany(
-        "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,Manager,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,GetDate())",
-        users,
-    )
-    if len(memberships) > 0:
+    if users:
+        cursor.executemany(
+            "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,Manager,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,GetDate())",
+            users,
+        )
+    if memberships:
         cursor.executemany(
             "INSERT INTO [LDAP].[dbo].[Memberships] (AccountName, GroupType, GroupName,LoadDate) VALUES (?,?,?,GetDate())",
             memberships,
         )
-    if len(groups) > 0:
+    if groups:
         cursor.executemany(
             "INSERT INTO [LDAP].[dbo].[Groups] (GroupType, AccountName, GroupName, GroupEmail,LoadDate) VALUES (?,?,?,?,GetDate())",
             groups,
