@@ -240,16 +240,17 @@ def main():
     cursor.execute(
         "DELETE FROM [LDAP].[dbo].[Users] where 1=1; DELETE FROM [LDAP].[dbo].[Memberships] where 1=1; DELETE FROM [LDAP].[dbo].[Groups] where 1=1; "
     )
-    cursor.executemany(
-        "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
-        users,
-    )
-    if len(memberships) > 0:
+    if users:
+        cursor.executemany(
+            "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
+            users,
+        )
+    if memberships:
         cursor.executemany(
             "INSERT INTO [LDAP].[dbo].[Memberships] (AccountName, GroupType, GroupName,LoadDate) VALUES (?,?,?,GetDate())",
             memberships,
         )
-    if len(groups) > 0:
+    if groups:
         cursor.executemany(
             "INSERT INTO [LDAP].[dbo].[Groups] (GroupType, AccountName, GroupName, GroupEmail,LoadDate) VALUES (?,?,?,?,GetDate())",
             groups,
