@@ -1,5 +1,9 @@
-name: 🧪 test
-on: [push, pull_request]
+name: test
+
+on:
+  push:
+    branches: [dev, alpha, master]
+  pull_request:
 
 jobs:
   test:
@@ -15,63 +19,50 @@ jobs:
         - 389:389
         - 636:636
         env:
-          LDAP_ORGANISATION: "example"
-          LDAP_DOMAIN: "example.org"
-          LDAP_ADMIN_PASSWORD: "adminpassword"
+          LDAP_ORGANISATION: example
+          LDAP_DOMAIN: example.org
+          LDAP_ADMIN_PASSWORD: adminpassword
+
     steps:
-    - name: 💾 Checkout
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: 🧹 Cleanup apt list
-      uses: christopherpickering/no-azure-action@v1.1.0
-
-    - name: ✅ Check LDAP is Up
+    - name: Check LDAP is up
       run: |
-        sudo apt install ldap-utils
+        sudo apt-get update
+        sudo apt-get install -y ldap-utils
         ldapsearch -x -b "dc=example,dc=org" -D "cn=admin,dc=example,dc=org" -w "adminpassword"
 
-    - name: 🐍 Setup Python
-      uses: actions/setup-python@v5
+    - uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.10'
+        python-version: "3.12"
 
-    - name: 🎶 Setup Poetry
-      uses: snok/install-poetry@v1
+    - name: Install dependencies
+      run: uv sync --group dev
 
-    - name: 📥 Install
-      run: poetry install
+    - name: Lint
+      run: uv run ruff check .
 
-    - name: 📇 Install Microsoft ODBC
-      run: sudo ACCEPT_EULA=Y apt-get install msodbcsql18 -y
+    - name: Install Microsoft ODBC
+      run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
-    - name: 📇 Install Sql Server
-      uses: potatoqualitee/mssqlsuite@v1.5.1
+    - name: Install SQL Server
+      uses: potatoqualitee/mssqlsuite@v1.12
       with:
         install: sqlengine, sqlpackage
 
-    - name: 💽 Setup Database
-      run: |
-        sqlcmd -S localhost -U sa -P dbatools.I0 -d Master -i LDAPDatabaseCreationScript.sql
-      env:
-        PATH: ${{ env.PATH }}:/opt/mssql-tools18/bin
+    - name: Setup database
+      run: sqlcmd -S localhost -U sa -P dbatools.I0 -d Master -C -i LDAPDatabaseCreationScript.sql
 
-    - name: 🧪 Run Test
-      run: |
-        poetry run tox -e test
+    - name: Run tests
+      run: uv run pytest tests.py -q
       env:
         LDAP_HOST: ldap://localhost:389
         LDAP_USERNAME: cn=admin,dc=example,dc=org
         LDAP_PASSWORD: adminpassword
         DATABASE: DRIVER={ODBC Driver 18 for SQL Server};SERVER=localhost;DATABASE=LDAP;UID=sa;PWD=dbatools.I0;TrustServerCertificate=YES
-        AD_DOMAIN: ''
+        AD_DOMAIN: ""
         LDAP_BASE: dc=example,dc=org
         LDAP_USER_SEARCH: (objectClass=inetOrgPerson)
         LDAP_GROUP_SEARCH: (objectClass=groupOfNames)
-        LDAP_USE_SSL: false
-        LDAP_USE_TLS: false
-
-    - name: 📤 Upload Coverage
-      uses: codecov/codecov-action@v4
-      with:
-        files: ./coverage.xml
-        verbose: true
+        LDAP_USE_SSL: "false"
+        LDAP_USE_TLS: "false"
