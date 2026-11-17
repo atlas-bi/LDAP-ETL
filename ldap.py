@@ -75,6 +75,16 @@ def get_ous(dn: List[Tuple[str, ...]]) -> List[str]:
     """Get a list of OUs from a dn."""
     return [x[1] for x in dn if x[0].lower() == "ou"]
 
+def get_cn(dn: List[Tuple[str, ...]]) -> Optional[str]:
+    """Get the top CN from a dn."""
+    cns = get_cns(dn)
+    return get_cns(dn)[-1] if cns else None
+
+
+def get_cns(dn: List[Tuple[str, ...]]) -> List[str]:
+    """Get a list of CNs from a dn."""
+    return [x[1] for x in dn if x[0].lower() == "cn"]
+
 
 def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
     """Get LDAP attribute value from data.
@@ -151,7 +161,7 @@ def main():  # noqa: PLR0912
             continue
 
         attributes = data["attributes"]
-
+        
         row = [
             get_attribute(LDAP_USER_EMPLOYEEID.split(","), attributes) or "",
             prefixer(
@@ -167,6 +177,12 @@ def main():  # noqa: PLR0912
             get_attribute(LDAP_USER_PHONE.split(","), attributes),
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
+            get_cn(
+                    dn.parse_dn(
+                        get_attribute(["manager", "dn"], attributes)
+                        or LDAP_BASE
+                    )
+                ), 
         ]
 
         users.append(row)
