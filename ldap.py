@@ -1,4 +1,5 @@
 """Atlas Supplementary LDAP ETL."""
+
 import os
 import re
 from base64 import b64encode
@@ -74,6 +75,7 @@ def get_ou(dn: List[Tuple[str, ...]]) -> Optional[str]:
 def get_ous(dn: List[Tuple[str, ...]]) -> List[str]:
     """Get a list of OUs from a dn."""
     return [x[1] for x in dn if x[0].lower() == "ou"]
+
 
 def get_cn(dn: List[Tuple[str, ...]]) -> Optional[str]:
     """Get the top CN from a dn."""
@@ -161,7 +163,7 @@ def main():  # noqa: PLR0912
             continue
 
         attributes = data["attributes"]
-        
+
         row = [
             get_attribute(LDAP_USER_EMPLOYEEID.split(","), attributes) or "",
             prefixer(
@@ -178,11 +180,8 @@ def main():  # noqa: PLR0912
             get_attribute(LDAP_USER_EMAIL.split(","), attributes),
             get_attribute(LDAP_USER_PHOTO.split(","), attributes),
             get_cn(
-                    dn.parse_dn(
-                        get_attribute(["manager", "dn"], attributes)
-                        or LDAP_BASE
-                    )
-                ), 
+                dn.parse_dn(get_attribute(["manager", "dn"], attributes) or LDAP_BASE)
+            ),
         ]
 
         users.append(row)
@@ -258,7 +257,7 @@ def main():  # noqa: PLR0912
     )
     if users:
         cursor.executemany(
-            "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,GetDate())",
+            "INSERT INTO [LDAP].[dbo].[Users] (EmployeeId,AccountName,DisplayName,FullName,FirstName,LastName,Department,Title,Phone,Email,Photo,Manager,LoadDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,GetDate())",
             users,
         )
     if memberships:
