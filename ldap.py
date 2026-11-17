@@ -115,7 +115,7 @@ def get_attribute(attribute: Union[List[str], str], my_data: Dict) -> str:
     return ""
 
 
-def main():
+def main():  # noqa: PLR0912
     """Primary function."""
     server = Server(LDAP_HOST, use_ssl=LDAP_USE_SSL, get_info=ALL)
     conn = Connection(
